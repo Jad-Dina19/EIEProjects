@@ -35,9 +35,11 @@ int main(void){
     while(1){
         for(uint8_t i = 0; i < ARRAY_SIZE(leds); i++){ 
             gpio_pin_toggle_dt(&leds[i]);
+            k_msleep(500); 
         }
-        k_msleep(500);
     }
+        
+    
 
 
     return 0;
