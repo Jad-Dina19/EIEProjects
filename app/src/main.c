@@ -31,16 +31,26 @@ int main(void){
             return ret;
         }
     } 
-    
+    uint32_t count = 0;
     while(1){
+        /*
         for(uint8_t i = 0; i < ARRAY_SIZE(leds); i++){ 
             gpio_pin_toggle_dt(&leds[i]);
             k_msleep(500); 
         }
+        */
+       if ((count % 2) == 0){
+            gpio_pin_toggle_dt(&leds[(ARRAY_SIZE(leds) -1)]); 
+        }
+       else if((count % 3) == 0){
+             
+            for(uint8_t i = 0; i < (ARRAY_SIZE(leds) -1); i++){ 
+                gpio_pin_toggle_dt(&leds[i]); 
+            }
+       }
+       k_msleep(100);
+       count++;
     }
-        
-    
-
 
     return 0;
 }
