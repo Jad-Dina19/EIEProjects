@@ -3,6 +3,7 @@
 */
 
 #include <zephyr/kernel.h>
+#include <zephyr/device.h>
 #include <zephyr/drivers/gpio.h>
 
 #define LED0_NODE DT_ALIAS(led0)
