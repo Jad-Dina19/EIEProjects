@@ -1,0 +1,21 @@
+menu "EIEProjects.git (/Users/jaddina/zephyr-projects/EIEProjects.git)"
+osource "/Users/jaddina/zephyr-projects/EIEProjects.git/Kconfig"
+config ZEPHYR_EIEPROJECTS_GIT_MODULE
+	bool
+	default y
+endmenu
+menu "cmsis_6 (/Users/jaddina/zephyr-projects/modules/hal/cmsis_6)"
+osource "$(ZEPHYR_CMSIS_6_KCONFIG)"
+config ZEPHYR_CMSIS_6_MODULE
+	bool
+	default y
+endmenu
+menu "hal_nordic (/Users/jaddina/zephyr-projects/modules/hal/nordic)"
+osource "$(ZEPHYR_HAL_NORDIC_KCONFIG)"
+config ZEPHYR_HAL_NORDIC_MODULE
+	bool
+	default y
+
+config ZEPHYR_HAL_NORDIC_MODULE_BLOBS
+	bool
+endmenu

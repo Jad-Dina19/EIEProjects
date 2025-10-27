@@ -1,0 +1,50 @@
+cmake:
+  application:
+    configuration-dir: '/Users/jaddina/zephyr-projects/EIEProjects.git/app'
+    source-dir: '/Users/jaddina/zephyr-projects/EIEProjects.git/app'
+  board:
+    name: 'nrf52840dk'
+    path:
+     - '/Users/jaddina/zephyr-projects/zephyr/boards/nordic/nrf52840dk'
+    qualifiers: 'nrf52840'
+    revision: ''
+  devicetree:
+    bindings-dirs:
+     - '/Users/jaddina/zephyr-projects/zephyr/dts/bindings'
+    files:
+     - '/Users/jaddina/zephyr-projects/zephyr/boards/nordic/nrf52840dk/nrf52840dk_nrf52840.dts'
+    include-dirs:
+     - '/Users/jaddina/zephyr-projects/zephyr/include'
+     - '/Users/jaddina/zephyr-projects/zephyr/include/zephyr'
+     - '/Users/jaddina/zephyr-projects/zephyr/dts/common'
+     - '/Users/jaddina/zephyr-projects/zephyr/dts/vendor'
+     - '/Users/jaddina/zephyr-projects/zephyr/dts/rx'
+     - '/Users/jaddina/zephyr-projects/zephyr/dts/x86'
+     - '/Users/jaddina/zephyr-projects/zephyr/dts/xtensa'
+     - '/Users/jaddina/zephyr-projects/zephyr/dts/sparc'
+     - '/Users/jaddina/zephyr-projects/zephyr/dts/riscv'
+     - '/Users/jaddina/zephyr-projects/zephyr/dts/posix'
+     - '/Users/jaddina/zephyr-projects/zephyr/dts/arm64'
+     - '/Users/jaddina/zephyr-projects/zephyr/dts/arm'
+     - '/Users/jaddina/zephyr-projects/zephyr/dts/arc'
+     - '/Users/jaddina/zephyr-projects/zephyr/dts'
+  kconfig:
+    files:
+     - '/Users/jaddina/zephyr-projects/zephyr/boards/nordic/nrf52840dk/nrf52840dk_nrf52840_defconfig'
+     - '/Users/jaddina/zephyr-projects/EIEProjects.git/app/prj.conf'
+    user-files:
+     - '/Users/jaddina/zephyr-projects/EIEProjects.git/app/prj.conf'
+  toolchain:
+    name: 'zephyr'
+    path: '/Users/jaddina/zephyr-sdk-0.17.2'
+  vendor-specific:
+    nordic:
+      svdfile: '/Users/jaddina/zephyr-projects/modules/hal/nordic/nrfx/mdk/nrf52840.svd'
+  zephyr:
+    version: '4.2.0'
+    zephyr-base: '/Users/jaddina/zephyr-projects/zephyr'
+version: '0.1.0'
+west:
+  command: '/Users/jaddina/zephyr-projects/.venv/bin/west build -b nrf52840dk/nrf52840'
+  topdir: '/Users/jaddina/zephyr-projects'
+  version: '1.4.0'

@@ -1,0 +1,4 @@
+west:
+  command: /Users/jaddina/zephyr-projects/.venv/bin/west build -b nrf52840dk/nrf52840
+  topdir: /Users/jaddina/zephyr-projects
+  version: 1.4.0
