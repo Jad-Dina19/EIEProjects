@@ -2,6 +2,7 @@
  * @file miniproj_fsm.h
  */
 //includes
+#include <stdlib.h>
 #include <zephyr/smf.h>
 #include "LED.h"
 #include "BTN.h"
@@ -16,7 +17,8 @@
  void state_machine_init();
  int state_machine_run();
 
- void add_char(const char *src);
+ char* add_char(char *src, uint8_t new_char);
+ void pwm_fade();
 
  static void state0_entry(void *o);
  static enum smf_state_result state0_run(void *o);
@@ -37,7 +39,7 @@
     STATE1,
     STATE2,
     STATE3,
- }
+ };
 
  typedef struct {
     struct smf_ctx ctx;
@@ -47,6 +49,9 @@
     uint8_t bit_index;
     char* str;
     uint64_t time_held;
+    uint8_t string_size;
+    uint8_t duty_cycle;
+    bool brighter;
  } miniproj_states_object_t;
 
  //local variables
