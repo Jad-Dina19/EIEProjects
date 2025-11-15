@@ -3,6 +3,7 @@
  */
 
 #include "miniproj_fsm.h"
+
 //initialze and run
 void state_machine_init(){
     state_obj.prev_state = NONE;
@@ -48,6 +49,7 @@ void pwm_fade(){
             LED_pwm(LED1, state_obj.duty_cycle);
             LED_pwm(LED2, state_obj.duty_cycle);
             LED_pwm(LED3, state_obj.duty_cycle);
+            k_msleep(100);
             state_obj.brighter = false;
         }
         else{
@@ -56,6 +58,7 @@ void pwm_fade(){
             LED_pwm(LED2, state_obj.duty_cycle);
             LED_pwm(LED3, state_obj.duty_cycle);
             state_obj.duty_cycle++;
+            k_msleep(100);
         }
     }
     if(!state_obj.brighter){
@@ -65,6 +68,7 @@ void pwm_fade(){
             LED_pwm(LED2, state_obj.duty_cycle);
             LED_pwm(LED3, state_obj.duty_cycle);
             state_obj.brighter = true;
+            k_msleep(100);
         }
         else{
             LED_pwm(LED0, state_obj.duty_cycle);
@@ -72,6 +76,7 @@ void pwm_fade(){
             LED_pwm(LED2, state_obj.duty_cycle);
             LED_pwm(LED3, state_obj.duty_cycle);
             state_obj.duty_cycle--;
+            k_msleep(100);
         }
     }
 }
@@ -128,18 +133,24 @@ static enum smf_state_result state0_run(void *o){
 
     }
 
-    // assuming delay is not exactly 1ms
-    if(BTN_is_pressed(BTN0)){
-        if(state_obj.time_held >= 250){
+    /* use uptime to measure elapsed milliseconds instead of loop-counting.
+     * On first detection store the timestamp in state_obj.time_held (0 means "not started").
+     * When elapsed >= 250 ms trigger the transition and clear the timestamp so the
+     * transition only happens once per long-press.
+     */
+    if (BTN_is_pressed(BTN0)) {
+        uint32_t start = (uint32_t)state_obj.time_held;
+        uint32_t now = k_uptime_get_32();
+        if (start == 0U) {
+            state_obj.time_held = now; /* start timer */
+        } else if ((uint32_t)(now - start) >= 2500U) {
             state_obj.prev_state = STATE0;
             printk("state3\n");
             smf_set_state(SMF_CTX(&state_obj), &miniproj_states[STATE3]);
+            state_obj.time_held = 0; /* reset to avoid repeated transitions */
         }
-
-        state_obj.time_held++;
-    }
-    else{
-        state_obj.time_held = 0; 
+    } else {
+        state_obj.time_held = 0;
     }
     return SMF_EVENT_HANDLED;
 
@@ -193,17 +204,23 @@ static enum smf_state_result state1_run(void *o){
 
     
 
-    // assuming delay is not exactly 1ms
-    if(BTN_is_pressed(BTN0) && BTN_is_pressed(BTN1)){
-        if(state_obj.time_held >= 2500){
-            state_obj.prev_state = STATE0;
+    /* use uptime to measure elapsed milliseconds instead of loop-counting.
+     * On first detection store the timestamp in state_obj.time_held (0 means "not started").
+     * When elapsed >= 2500 ms trigger the transition and clear the timestamp so the
+     * transition only happens once per long-press.
+     */
+    if (BTN_is_pressed(BTN0) && BTN_is_pressed(BTN1)) {
+        uint32_t start = (uint32_t)state_obj.time_held;
+        uint32_t now = k_uptime_get_32();
+        if (start == 0U) {
+            state_obj.time_held = now; /* start timer */
+        } else if ((uint32_t)(now - start) >= 2500U) {
+            state_obj.prev_state = STATE1;
             smf_set_state(SMF_CTX(&state_obj), &miniproj_states[STATE3]);
+            state_obj.time_held = 0; /* reset to avoid repeated transitions */
         }
-
-        state_obj.time_held++;
-    }
-    else{
-        state_obj.time_held = 0; 
+    } else {
+        state_obj.time_held = 0;
     }
 
     return SMF_EVENT_HANDLED;
@@ -230,7 +247,7 @@ static enum smf_state_result state2_run(void *o){
     // assuming delay is not exactly 1ms
     if(BTN_is_pressed(BTN0) && BTN_is_pressed(BTN1)){
         if(state_obj.time_held >= 2500){
-            state_obj.prev_state = STATE0;
+            state_obj.prev_state = STATE2;
             smf_set_state(SMF_CTX(&state_obj), &miniproj_states[STATE3]);
         }
 
@@ -250,6 +267,7 @@ static void state3_entry(void *o){
     LED_set(LED1, LED_OFF);
     LED_set(LED2, LED_OFF);
     LED_set(LED3, LED_OFF);
+    k_msleep(1000);
 }
 
 static enum smf_state_result state3_run(void *o){
@@ -258,6 +276,7 @@ static enum smf_state_result state3_run(void *o){
         LED_set(LED1, LED_OFF);
         LED_set(LED2, LED_OFF);
         LED_set(LED3, LED_OFF); 
+        printk("%d", state_obj.prev_state);
         smf_set_state(SMF_CTX(&state_obj), &miniproj_states[state_obj.prev_state]);
     }
     else{
