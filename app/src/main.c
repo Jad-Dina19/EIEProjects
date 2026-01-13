@@ -19,6 +19,8 @@
 #include <zephyr/kernel.h>
 #include <zephyr/settings/settings.h>
 #include <zephyr/sys/printk.h>
+#include "LED.h"
+#include "BTN.h"
 
 /* MACROS --------------------------------------------------------------------------------------- */
 
@@ -107,15 +109,31 @@ static ssize_t ble_custom_service_write(struct bt_conn* conn, const struct bt_ga
   for (uint16_t i = 0; i < len; i++) {
     printk("%s %02X '%c'", i == 0 ? "" : ",", value[offset + i], value[offset + i]);
   }
-  printk("\n");
+ 
+  if(strcmp((char*)value, "LED ON") == 0){
+      printk("Hello");
+      LED_set(LED0, LED_ON);
+      printk("[LED] LED1 ON\n");
+  }
+  else if(strcmp((char*)value, "LED OFF") == 0){
+      LED_set(LED0, LED_OFF);
+      printk("[LED] LED1 OFF\n");
+  }
+
+  printk("\n Hello \n");
 
   return len;
 }
 
-static void ble_custom_service_notify() {
+static void ble_custom_service_notify(int num) {
   static uint32_t counter = 0;
   bt_gatt_notify(NULL, &ble_custom_service.attrs[2], &counter, sizeof(counter));
-  counter++;
+  if(num){
+    counter++; 
+  }
+  else{
+    counter--;
+  }
 }
 
 /* MAIN ----------------------------------------------------------------------------------------- */
@@ -129,6 +147,14 @@ int main(void) {
     printk("Bluetooth initialized!\n");
   }
 
+  if (0 > LED_init()) {
+    return 0;
+  }
+
+  if(0 > BTN_init()){
+    return 0;
+  }
+
   err =
       bt_le_adv_start(BT_LE_ADV_CONN_FAST_1, ble_advertising_data, ARRAY_SIZE(ble_advertising_data),
                       ble_scan_response_data, ARRAY_SIZE(ble_scan_response_data));
@@ -136,9 +162,17 @@ int main(void) {
     printk("Advertising failed to start (err %d)\n", err);
     return 0;
   }
+  int forward = 1;
 
   while (1) {
+    if(BTN_is_pressed(BTN0) && forward == 1){
+      forward = 0;
+    }
+    else if(BTN_is_pressed(BTN0) && forward == 0){
+      forward = 1;
+    }
+
     k_sleep(K_MSEC(1000));
-    ble_custom_service_notify();
+    ble_custom_service_notify(forward);
   }
 }
