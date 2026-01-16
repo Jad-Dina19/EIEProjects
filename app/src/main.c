@@ -44,14 +44,13 @@ static const struct bt_data ble_advertising_data[] = {
   BT_DATA(BT_DATA_NAME_COMPLETE, CONFIG_BT_DEVICE_NAME, sizeof(CONFIG_BT_DEVICE_NAME) - 1),
 };
 //char 1
-static uint8_t ble_custom_characteristic_user_data[BLE_CUSTOM_CHARACTERISTIC_MAX_DATA_LENGTH + 1] = {};
+static uint8_t shared_data[BLE_CUSTOM_CHARACTERISTIC_MAX_DATA_LENGTH + 1] = {};
 
 static const struct bt_uuid_128 ble_custom_service_uuid = BT_UUID_INIT_128(BLE_CUSTOM_SERVICE_UUID);
 static const struct bt_uuid_128 ble_custom_characteristic_uuid = BT_UUID_INIT_128(BLE_CUSTOM_CHARACTERISTIC_UUID);
 
 //char 2
 static const struct bt_uuid_128 ble_custom_characteristic2_uuid = BT_UUID_INIT_128(BLE_CUSTOM_CHARACTERISTIC2_UUID);
-static uint8_t ble_custom_characteristic2_user_data[BLE_CUSTOM_CHARACTERISTIC_MAX_DATA_LENGTH + 1] = {};
 
 
 
@@ -86,7 +85,7 @@ BT_GATT_SERVICE_DEFINE(
     BT_GATT_PERM_READ,
     ble_custom_characteristic_read_cb,
     NULL,
-    ble_custom_characteristic_user_data
+    shared_data
   ),
   BT_GATT_CHARACTERISTIC(
     &ble_custom_characteristic2_uuid.uuid,
@@ -94,7 +93,7 @@ BT_GATT_SERVICE_DEFINE(
     BT_GATT_PERM_WRITE,
     NULL,
     ble_custom_characteristic_write_cb,
-    ble_custom_characteristic2_user_data
+    shared_data
   ),
 
 );
